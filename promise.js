@@ -184,19 +184,16 @@ Promise.all = promises => {
       reason => reject(reason)
     )
   })
-
   return promise
 }
 
 Promise.race = promises => {
   const { promise, resolve, reject } = Promise.defer()
-
   promises.forEach(p => {
     Promise.resolve(p).then(
       val => resolve(val),
       reason => reject(reason)
     )
   })
-
   return promise
 }
