@@ -167,32 +167,36 @@ Promise.reject = value => {
 }
 
 Promise.all = promises => {
+  const { promise, resolve, reject } = Promise.defer()
   const results = []
   const n = promises.length
   let resolveCount = 0
-  return new Promise((resolve, reject) => {
-    promises.forEach((p, i) => {
-      Promise.resolve(p).then(
-        val => {
-          results[i] = val
-          resolveCount++
-          if (resolveCount === n) {
-            resolve(results)
-          }
-        },
-        reason => reject(reason)
-      )
-    })
+
+  promises.forEach((p, i) => {
+    Promise.resolve(p).then(
+      val => {
+        results[i] = val
+        resolveCount++
+        if (resolveCount === n) {
+          resolve(results)
+        }
+      },
+      reason => reject(reason)
+    )
   })
+
+  return promise
 }
 
 Promise.race = promises => {
-  return new Promise((resolve, reject) => {
-    promises.forEach((p, i) => {
-      Promise.resolve(p).then(
-        val => resolve(val),
-        reason => reject(reason)
-      )
-    })
+  const { promise, resolve, reject } = Promise.defer()
+
+  promises.forEach(p => {
+    Promise.resolve(p).then(
+      val => resolve(val),
+      reason => reject(reason)
+    )
   })
+
+  return promise
 }
