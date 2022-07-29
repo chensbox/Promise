@@ -37,7 +37,7 @@ class Promise {
       changeState(REJECTED, value, this.onRejectedCallbacks)
       queueMicrotask(() => {
         if (!this.onRejectedCallbacks.length && this.chainIsEnd) {
-          throw `in Promise ${value}`
+          throw `(in Promise) ${value}`
         }
       })
     }

@@ -1,0 +1,24 @@
+<html>
+  <script src="./promise.js"></script>
+
+  <script>
+    Promise.resolve()
+      .then(() => {
+        throw 'err'
+      })
+      .then(() => {})
+      .then(
+        () => {},
+        e => console.log(e)
+      )
+      .then(() => {})
+      .then(() => {})
+
+    Promise.reject('err2')
+      .then(() => {})
+      .then(() => {})
+      .catch(e => console.log(e))
+
+    Promise.reject('oh')
+  </script>
+</html>
