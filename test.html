@@ -8,7 +8,8 @@
     // new Promise(res => res(1)).then(res => console.log(res))
     // new Promise((res, rej) => rej('err')).catch(e => console.log(e))
     // Promise.reject('error').catch(e => console.log(e))
-    new Promise((res, rej) => rej('err')).catch(e => console.log(e))
+    //new Promise((res, rej) => rej('err')).catch(e => console.log(e))
+
     // /**===========================================================================
     //  *     TEST
     //  * ==========================================================================*/
@@ -49,5 +50,15 @@
     //   .finally(() => {
     //     console.log('finally')
     //   })
+
+    Promise.resolve()
+      .then(() => console.log('A1'))
+      .then(() => console.log('A2'))
+      .then(() => console.log('A3'))
+
+    Promise.resolve()
+      .then(() => console.log('B1'))
+      .then(() => console.log('B2'))
+      .then(() => console.log('B3'))
   </script>
 </html>

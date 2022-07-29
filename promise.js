@@ -87,18 +87,18 @@ class Promise {
   }
 }
 
-const resolvePromise = (x, promise, resolve, reject) => {
-  const isPromise = x instanceof Promise
-  const isSamePromise = promise === x
-  const isObject = !!x && typeof x === 'object'
-  const isFunction = typeof x === 'function'
+const resolvePromise = (newValue, promise, resolve, reject) => {
+  const isPromise = newValue instanceof Promise
+  const isSamePromise = newValue === promise
+  const isObject = !!newValue && typeof newValue === 'object'
+  const isFunction = typeof newValue === 'function'
 
   if (isSamePromise) {
     reject(new TypeError('Chaining cycle detected for promise'))
   }
 
   if (isPromise) {
-    x.then(
+    newValue.then(
       value => resolvePromise(value, promise, resolve, reject),
       reason => reject(reason)
     )
@@ -111,7 +111,7 @@ const resolvePromise = (x, promise, resolve, reject) => {
       return called
     }
     try {
-      const then = x.then
+      const then = newValue.then
       const isThenable = typeof then === 'function'
       const onFulfilled = value => {
         if (checkIsCalled()) return
@@ -122,16 +122,16 @@ const resolvePromise = (x, promise, resolve, reject) => {
         reject(reason)
       }
       if (isThenable) {
-        then.call(x, onFulfilled, onRejected)
+        then.call(newValue, onFulfilled, onRejected)
       } else {
-        resolve(x)
+        resolve(newValue)
       }
-    } catch (e) {
+    } catch (error) {
       if (checkIsCalled()) return
-      reject(e)
+      reject(error)
     }
   } else {
-    resolve(x)
+    resolve(newValue)
   }
 }
 Promise.defer = () => {
@@ -154,10 +154,8 @@ Promise.resolve = value => {
       if (typeof then === 'function') {
         return new Promise(then.bind(value))
       }
-    } catch (e) {
-      return new Promise((resolve, reject) => {
-        reject(e)
-      })
+    } catch (error) {
+      return Promise.reject(error)
     }
   }
 
