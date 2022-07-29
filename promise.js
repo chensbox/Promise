@@ -42,7 +42,8 @@ class Promise {
     try {
       executor(resolve, reject)
     } catch (e) {
-      reject(e)
+      // reject(e)
+      this.onRejectedCallbacks.push(() => reject(e))
     }
   }
   then(onFulfilled, onRejected) {
