@@ -19,6 +19,7 @@ class Promise {
     }
     this.PromiseState = PENDING
     this.PromiseResult = void 0
+    this.chainIsEnd = true
     this.onFulfilledCallbacks = []
     this.onRejectedCallbacks = []
 
@@ -34,7 +35,6 @@ class Promise {
     }
     const reject = value => {
       changeState(REJECTED, value, this.onRejectedCallbacks)
-      this.chainIsEnd = true
       queueMicrotask(() => {
         if (!this.onRejectedCallbacks.length && this.chainIsEnd) {
           throw `in Promise ${value}`
