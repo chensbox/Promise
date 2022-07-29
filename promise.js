@@ -34,19 +34,23 @@ class Promise {
     }
     const reject = value => {
       changeState(REJECTED, value, this.onRejectedCallbacks)
-      if (!this.onRejectedCallbacks.length) {
-        throw `(in promise) ${value}`
-      }
+      this.chainIsEnd = true
+      queueMicrotask(() => {
+        if (!this.onRejectedCallbacks.length && this.chainIsEnd) {
+          throw `in Promise ${value}`
+        }
+      })
     }
 
     try {
       executor(resolve, reject)
     } catch (e) {
-      // reject(e)
-      this.onRejectedCallbacks.push(() => reject(e))
+      reject(e)
     }
   }
   then(onFulfilled, onRejected) {
+    this.chainIsEnd = false
+
     if (typeof onFulfilled !== 'function') {
       onFulfilled = v => v
     }
