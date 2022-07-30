@@ -197,3 +197,36 @@ Promise.race = promises => {
   })
   return promise
 }
+
+Promise.allSettled = promises => {
+  const { promise, resolve } = Promise.defer()
+  const results = []
+  const n = promises.length
+  let settleCount = 0
+  const makeresult = (state, val) => ({
+    state,
+    [state === FULFILLED ? 'value' : 'reason']: val
+  })
+  promises.forEach((p, i) => {
+    Promise.resolve(p)
+      .then(val => (results[i] = makeresult(FULFILLED, val)))
+      .catch(err => (results[i] = makeresult(REJECTED, err)))
+      .finally(() => {
+        if (++settleCount === n) {
+          resolve(results)
+        }
+      })
+  })
+  return promise
+}
+
+Promise.any = promises => {
+  const { promise, resolve } = Promise.defer()
+  promises.forEach(p =>
+    Promise.resolve(p).then(
+      val => resolve(val),
+      e => e
+    )
+  )
+  return promise
+}
