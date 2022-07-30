@@ -48,6 +48,7 @@ class Promise {
       reject(e)
     }
   }
+
   then(onFulfilled, onRejected) {
     this.chainIsEnd = false
 
@@ -73,9 +74,11 @@ class Promise {
 
     return defer.promise
   }
+
   catch(onRejected) {
     return this.then(undefined, onRejected)
   }
+
   finally(callback) {
     return this.then(
       value => Promise.resolve(callback()).then(() => value),
@@ -134,6 +137,7 @@ const resolvePromise = (newValue, promise, resolve, reject) => {
     resolve(newValue)
   }
 }
+
 Promise.defer = function () {
   const defer = {}
   defer.promise = new Promise((resolve, reject) => {
