@@ -1,0 +1,16 @@
+<html>
+  <script src="./promise.js"></script>
+  <script>
+    function task() {
+      window.Promise === Promise
+      return new Promise(res => {
+        setTimeout(res, 5000, 'data')
+      })
+    }
+    async function fn() {
+      const res = await task()
+      console.log(res)
+    }
+    fn()
+  </script>
+</html>
