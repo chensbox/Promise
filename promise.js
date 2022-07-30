@@ -162,9 +162,7 @@ Promise.resolve = value => {
   return new Promise(resolve => resolve(value))
 }
 
-Promise.reject = value => {
-  return new Promise((resolve, reject) => reject(value))
-}
+Promise.reject = value => new Promise((resolve, reject) => reject(value))
 
 Promise.all = promises => {
   const { promise, resolve, reject } = Promise.defer()
