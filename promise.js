@@ -134,7 +134,7 @@ const resolvePromise = (newValue, promise, resolve, reject) => {
     resolve(newValue)
   }
 }
-Promise.defer = () => {
+Promise.defer = function () {
   const defer = {}
   defer.promise = new Promise((resolve, reject) => {
     defer.resolve = resolve
@@ -143,7 +143,7 @@ Promise.defer = () => {
   return defer
 }
 
-Promise.resolve = value => {
+Promise.resolve = function (value) {
   if (value instanceof Promise) {
     return value
   }
@@ -162,9 +162,11 @@ Promise.resolve = value => {
   return new Promise(resolve => resolve(value))
 }
 
-Promise.reject = value => new Promise((resolve, reject) => reject(value))
+Promise.reject = function (value) {
+  return new Promise((resolve, reject) => reject(value))
+}
 
-Promise.all = promises => {
+Promise.all = function (promises) {
   const { promise, resolve, reject } = Promise.defer()
   const results = []
   const n = promises.length
@@ -185,7 +187,7 @@ Promise.all = promises => {
   return promise
 }
 
-Promise.race = promises => {
+Promise.race = function (promises) {
   const { promise, resolve, reject } = Promise.defer()
   promises.forEach(p => {
     Promise.resolve(p).then(
@@ -196,7 +198,7 @@ Promise.race = promises => {
   return promise
 }
 
-Promise.allSettled = promises => {
+Promise.allSettled = function (promises) {
   const { promise, resolve } = Promise.defer()
   const results = []
   const n = promises.length
@@ -218,7 +220,7 @@ Promise.allSettled = promises => {
   return promise
 }
 
-Promise.any = promises => {
+Promise.any = function (promises) {
   const { promise, resolve } = Promise.defer()
   promises.forEach(p =>
     Promise.resolve(p).then(
