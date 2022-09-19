@@ -23,24 +23,32 @@ class Promise {
     this.onFulfilledCallbacks = []
     this.onRejectedCallbacks = []
 
-    const changeState = (state, value, queue) => {
+    const changeState = (state, value) => {
       if (this.PromiseState == PENDING) {
         this.PromiseState = state
         this.PromiseResult = value
-        queue.forEach(cb => cb(this.PromiseResult))
+        ;(state === FULFILLED
+          ? this.onFulfilledCallbacks
+          : this.onRejectedCallbacks
+        ).forEach(cb => cb(this.PromiseResult))
       }
     }
     const resolve = value => {
       if (value instanceof Promise) {
-        value.then(res => {
-          changeState(FULFILLED, res, this.onFulfilledCallbacks)
-        })
+        value.then(
+          res => {
+            changeState(FULFILLED, res)
+          },
+          err => {
+            changeState(REJECTED, err)
+          }
+        )
       } else {
-        changeState(FULFILLED, value, this.onFulfilledCallbacks)
+        changeState(FULFILLED, value)
       }
     }
     const reject = value => {
-      changeState(REJECTED, value, this.onRejectedCallbacks)
+      changeState(REJECTED, value)
       queueMicrotask(() => {
         if (!this.onRejectedCallbacks.length && this.chainIsEnd) {
           throw `(in Promise) ${value}`
