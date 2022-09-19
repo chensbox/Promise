@@ -31,7 +31,13 @@ class Promise {
       }
     }
     const resolve = value => {
-      changeState(FULFILLED, value, this.onFulfilledCallbacks)
+      if (value instanceof Promise) {
+        value.then(res => {
+          changeState(FULFILLED, res, this.onFulfilledCallbacks)
+        })
+      } else {
+        changeState(FULFILLED, value, this.onFulfilledCallbacks)
+      }
     }
     const reject = value => {
       changeState(REJECTED, value, this.onRejectedCallbacks)
