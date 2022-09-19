@@ -36,12 +36,8 @@ class Promise {
     const resolve = value => {
       if (value instanceof Promise) {
         value.then(
-          res => {
-            changeState(FULFILLED, res)
-          },
-          err => {
-            changeState(REJECTED, err)
-          }
+          res => changeState(FULFILLED, res),
+          err => changeState(REJECTED, err)
         )
       } else {
         changeState(FULFILLED, value)
