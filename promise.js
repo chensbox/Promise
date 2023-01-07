@@ -107,7 +107,7 @@ const resolvePromise = (newValue, promise, resolve, reject) => {
   const isFunction = typeof newValue === 'function'
 
   if (isSamePromise) {
-    reject(new TypeError('Chaining cycle detected for promise'))
+    return reject(new TypeError('Chaining cycle detected for promise'))
   }
 
   if (isPromise) {
@@ -118,10 +118,7 @@ const resolvePromise = (newValue, promise, resolve, reject) => {
   } else if (isObject || isFunction) {
     let called = false
     const checkIsCalled = () => {
-      if (!called) {
-        return (called = !called), !called
-      }
-      return called
+      return called ? true : ((called = true), false)
     }
     try {
       const then = newValue.then
@@ -235,11 +232,17 @@ Promise.allSettled = function (promises) {
 }
 
 Promise.any = function (promises) {
-  const { promise, resolve } = Promise.defer()
+  const { promise, resolve, reject } = Promise.defer()
+  const n = promises.length
+  let rejectCount = 0
   promises.forEach(p =>
     Promise.resolve(p).then(
       val => resolve(val),
-      e => e
+      () => {
+        if (++rejectCount === n) {
+          reject('AggregateError: All promises were rejected')
+        }
+      }
     )
   )
   return promise
